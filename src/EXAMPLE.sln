@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EXAMPLE", "EXAMPLE\EXAMPLE.csproj", "{93479962-3A49-4221-99F7-B9AD8590A6BA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Localization", "Localization", "{E701DBC5-B80F-4B29-A37C-F19D50970201}"
+	ProjectSection(SolutionItems) = preProject
+		Localization\localization.xsd = Localization\localization.xsd
+		Localization\std_EXAMPLE.xml = Localization\std_EXAMPLE.xml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{93479962-3A49-4221-99F7-B9AD8590A6BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93479962-3A49-4221-99F7-B9AD8590A6BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93479962-3A49-4221-99F7-B9AD8590A6BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93479962-3A49-4221-99F7-B9AD8590A6BA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FF6EB7D0-C9CB-4A8B-AE72-0511907E6821}
+	EndGlobalSection
+EndGlobal

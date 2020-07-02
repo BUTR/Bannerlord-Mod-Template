@@ -1,0 +1,117 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Version>0.0.1</Version>
+    <TargetFrameworks>net472</TargetFrameworks>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <GameFolder>C:\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord</GameFolder>
+    <NoWarn>NU1701</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="$(GameFolder)\bin\Win64_Shipping_Client\TaleWorlds.*.dll">
+      <HintPath>%(Identity)</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="$(GameFolder)\Modules\Native\bin\Win64_Shipping_Client\*.dll">
+      <HintPath>%(Identity)</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="$(GameFolder)\Modules\SandBox\bin\Win64_Shipping_Client\*.dll">
+      <HintPath>%(Identity)</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="$(GameFolder)\Modules\SandBoxCore\bin\Win64_Shipping_Client\*.dll">
+      <HintPath>%(Identity)</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="$(GameFolder)\Modules\StoryMode\bin\Win64_Shipping_Client\*.dll">
+      <HintPath>%(Identity)</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lib.Harmony" Version="2.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" PrivateAssets="All" />
+  </ItemGroup>
+
+  <!--For automatically creating the module-->
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$(ModuleName) != ''">
+    <CreateDirectory Directory="$(GameFolder)/Modules/$(ModuleName)/bin/Win64_Shipping_Client" />
+
+    <CopyFolder FromDirectory="$(TargetDir)" ToDirectory="$(GameFolder)/Modules/$(ModuleName)/bin/Win64_Shipping_Client" Regex="^(?!MCM.Standalone).*\.dll$" Clean="true" />
+
+    <CopyFolder FromDirectory="$(ProjectDir)/_Module" ToDirectory="$(GameFolder)/Modules/$(ModuleName)" Regex="^.*$" Clean="false" />
+
+    <ReplaceFileText File="$(GameFolder)/Modules/$(ModuleName)/SubModule.xml" Regex="\$version\$" ReplacementText="$(Version)" />
+  </Target>
+
+  <!--The actial tasks-->
+  <UsingTask TaskName="CreateDirectory" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Directory ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+            var directory = new DirectoryInfo(Directory);
+            if (!directory.Exists)
+                directory.Create();
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+  <UsingTask TaskName="CopyFolder" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <FromDirectory ParameterType="System.String" Required="true" />
+      <ToDirectory ParameterType="System.String" Required="true" />
+      <Regex ParameterType="System.String" Required="true" />
+      <Clean ParameterType="System.Boolean" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+            void CopyTo(System.IO.DirectoryInfo from, System.IO.DirectoryInfo to)
+            {
+                if (!to.Exists)
+                  to.Create();
+            
+                if (Clean)
+                {
+                    foreach (var fileInfo in to.GetFiles().Where(x => System.Text.RegularExpressions.Regex.IsMatch(x.Name, Regex)))
+                        fileInfo.Delete();
+                }
+        
+                foreach (var fileInfo in from.GetFiles().Where(x => System.Text.RegularExpressions.Regex.IsMatch(x.Name, Regex)))
+                    fileInfo.CopyTo(System.IO.Path.Combine(to.FullName, fileInfo.Name), true);
+                foreach (var directoryInfo in from.GetDirectories())
+                    CopyTo(directoryInfo, to.CreateSubdirectory(directoryInfo.Name));
+            }
+
+            CopyTo(new System.IO.DirectoryInfo(FromDirectory), new System.IO.DirectoryInfo(ToDirectory));
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+  <UsingTask TaskName="ReplaceFileText" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <File ParameterType="System.String" Required="true" />
+      <Regex ParameterType="System.String" Required="true" />
+      <ReplacementText ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+          System.IO.File.WriteAllText(
+            File,
+            System.Text.RegularExpressions.Regex.Replace(System.IO.File.ReadAllText(File), Regex, ReplacementText));
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+</Project>
