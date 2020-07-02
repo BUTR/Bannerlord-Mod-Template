@@ -1,1 +1,0 @@
-Any images that are needed for the wiki/CI go here
