@@ -1,15 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!--This property will be used to mark the version of your output assembly and the version of yout SubModule.xml-->
     <Version>0.0.1</Version>
+    <!--The game uses the .NET Framework 4.7.2 runtime, but I would recommed you to use 'netstandard2.0' target framework-->
     <TargetFrameworks>net472</TargetFrameworks>
+    <!--Optional-->
     <LangVersion>8.0</LangVersion>
+    <!--Optional-->
     <Nullable>enable</Nullable>
-    <!--Replcae with your actual game folder-->
+    <!--Replace with your actual game folder-->
     <GameFolder>C:\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord</GameFolder>
     <NoWarn>NU1701</NoWarn>
   </PropertyGroup>
 
+   <!--Reference the main game libraries, including the modules.
+       Make sure to make your module depend on any game module that you use.-->
   <ItemGroup>
     <Reference Include="$(GameFolder)\bin\Win64_Shipping_Client\TaleWorlds.*.dll">
       <HintPath>%(Identity)</HintPath>
@@ -34,7 +40,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!--Overriding a specific game class is not recommended. Any other mod can replace your override with its own.
+        You have better chances on providing cross-mod support by using Harmony's Prefix/Postfix system with load orders.-->
     <PackageReference Include="Lib.Harmony" Version="2.0.1" />
+    <!--Bannerlord uses Newtonsoft.Json v11.0.2. Use NuGet package instead of referencing the /bin one.-->
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" PrivateAssets="All" />
   </ItemGroup>
 
