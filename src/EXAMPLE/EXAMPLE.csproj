@@ -5,6 +5,7 @@
     <TargetFrameworks>net472</TargetFrameworks>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
+    <!--Replcae with your actual game folder-->
     <GameFolder>C:\Program Files (x86)\Steam\steamapps\common\Mount &amp; Blade II Bannerlord</GameFolder>
     <NoWarn>NU1701</NoWarn>
   </PropertyGroup>
@@ -48,7 +49,7 @@
     <ReplaceFileText File="$(GameFolder)/Modules/$(ModuleName)/SubModule.xml" Regex="\$version\$" ReplacementText="$(Version)" />
   </Target>
 
-  <!--The actial tasks-->
+  <!--The actual tasks-->
   <UsingTask TaskName="CreateDirectory" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
     <ParameterGroup>
       <Directory ParameterType="System.String" Required="true" />
